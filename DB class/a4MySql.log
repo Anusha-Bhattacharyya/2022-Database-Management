@@ -1,0 +1,318 @@
+mysql> CREATE TABLE SUPPLIER
+    -> ( SUPPLIER_ID int NOT NULL,
+    ->   SUPPLIER_NAME char(50) NOT NULL,
+    ->   SUPPLIER_PHONE char(25) NOT NULL,
+    ->   SUPPLIER_EMAIL varchar(50) NOT NULL,
+    ->   PRIMARY KEY (SUPPLIER_ID),
+    ->   CHECK(SUPPLIER_ID >= 1)
+    -> );
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> 
+mysql> CREATE TABLE ITEM
+    -> ( ITEM_ID int NOT NULL,
+    ->   ITEM_NAME char(50) NOT NULL,
+    ->   ITEM_SUPPLIER_ID int NOT NULL,
+    ->   ITEM_QUANTITY int NOT NULL,
+    ->   ITEM_UNIT_PRICE float NOT NULL,
+    ->   PRIMARY KEY (ITEM_ID),
+    ->   FOREIGN KEY (ITEM_SUPPLIER_ID) REFERENCES SUPPLIER(SUPPLIER_ID),
+    ->   CHECK (ITEM_QUANTITY >= 0),
+    ->   CHECK(ITEM_ID >= 1)
+    -> );
+Query OK, 0 rows affected (0.11 sec)
+
+mysql> 
+mysql> CREATE TABLE EMPLOYEE
+    -> ( EMPLOYEE_ID int NOT NULL,
+    ->   EMPLOYEE_NAME char(50) NOT NULL,
+    ->   EMPLOYEE_ROLE char(50) NOT NULL,
+    ->   EMPLOYEE_PHONE char(25) NOT NULL,
+    ->   EMPLOYEE_ADDRESS char(50) NOT NULL,
+    ->   EMPLOYEE_START_DATE date NOT NULL,
+    ->   PRIMARY KEY (EMPLOYEE_ID),
+    ->   CHECK(EMPLOYEE_ID >= 1),
+    ->   CHECK (EMPLOYEE_START_DATE BETWEEN '1900-01-01' AND  CURDATE())
+    -> );
+Query OK, 0 rows affected (0.11 sec)
+
+mysql> 
+mysql> CREATE TABLE SALES
+    -> ( SALES_ID int NOT NULL,
+    ->   SALES_EMPLOYEE_ID int NOT NULL,
+    ->   SALES_GRATUITY float,
+    ->   SALES_TOTAL float NOT NULL,
+    ->   SALES_CREATE_AT date NOT NULL,
+    ->   SALES_UPDATED_AT date,
+    ->   PRIMARY KEY (SALES_ID),
+    ->   FOREIGN KEY (SALES_EMPLOYEE_ID) REFERENCES EMPLOYEE(EMPLOYEE_ID),
+    ->   CHECK(SALES_ID >= 1)
+    -> );
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> 
+mysql> CREATE TABLE SALE_ITEMS
+    -> ( SALE_ITEMS_SALE_ID int NOT NULL,
+    ->   SALE_ITEMS_ITEM_ID int NOT NULL,
+    ->   SALE_ITEMS_QUANTITY int NOT NULL,
+    ->   SALE_ITEMS_TOTAL float NOT NULL,
+    ->   PRIMARY KEY (SALE_ITEMS_SALE_ID, SALE_ITEMS_ITEM_ID),
+    ->   FOREIGN KEY (SALE_ITEMS_SALE_ID) REFERENCES SALES(SALES_ID),
+    ->   FOREIGN KEY (SALE_ITEMS_ITEM_ID) REFERENCES ITEM(ITEM_ID),
+    ->   CHECK (SALE_ITEMS_QUANTITY >= 1),
+    ->   CHECK (SALE_ITEMS_TOTAL >= 0.00)
+    -> );
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> INSERT INTO SUPPLIER VALUES (1, 'Coco Fresh Tea & Juice','7183532709', 'marketing@cocobubbletea.com');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO SUPPLIER VALUES (3, 'Sharetea', '4052122339', 'service@1992sharetea.com');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO SUPPLIER VALUES (4, 'Boba Guys', '4159672622', 'support@bobaguys.zendesk.com');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO SUPPLIER VALUES (8, 'Kung Fu Tea', '8555389888', 'info@kfteausa.com');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO SUPPLIER VALUES (15, 'Fat Straws', '4695472195', 'smile@fatstraws.net');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> 
+mysql> INSERT INTO ITEM VALUES (2, 'Classic Black Tea', 3, 68, 3.00);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO ITEM VALUES (3, 'Classic Oolong Tea', 3, 36, 3.00);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO ITEM VALUES (10, 'Honey Milk Tea', 1, 59, 4.50);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO ITEM VALUES (11, 'Kung Fu Milk Green Tea', 8, 5, 4.50);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO ITEM VALUES (15, 'Mango & Passion Fruit Tea', 3, 15, 5.00);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> INSERT INTO ITEM VALUES (20, 'Matcha Milk Tea', 4, 1, 4.00);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO ITEM VALUES (21, 'Taro Milk Tea', 15, 3, 4.00);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> 
+mysql> INSERT INTO EMPLOYEE VALUES (1, 'Alice Atkins', 'Manager', '479-555-0171', '4240 Arlington Ave, Jonesboro', '2021-10-12');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO EMPLOYEE VALUES (2, 'Albert Bullock', 'Cashier', '479-555-0149', '383 Rosebud Ave, Hatfield', '2021-10-12');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO EMPLOYEE VALUES (3, 'Juan Scott', 'Cashier', '479-555-0152', '5 Barrington Court, Little Rock', '2021-10-12');
+Query OK, 1 row affected (0.02 sec)
+
+mysql> INSERT INTO EMPLOYEE VALUES (4, 'Christine Jarrett', 'Cashier', '479-555-0110', '1484 Mulberry Avenue, Conway', '2021-10-12');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> 
+mysql> INSERT INTO SALES VALUES (1, 4, NULL, 16.50, '2022-01-17 14:01:24', NULL);
+Query OK, 1 row affected, 1 warning (0.01 sec)
+
+mysql> INSERT INTO SALES VALUES (2, 4, NULL, 4.00, '2022-01-17 14:15:06', NULL);
+Query OK, 1 row affected, 1 warning (0.00 sec)
+
+mysql> INSERT INTO SALES VALUES (3, 3, NULL, 17.50, '2022-01-17 15:12:40', NULL);
+Query OK, 1 row affected, 1 warning (0.03 sec)
+
+mysql> INSERT INTO SALES VALUES (4, 2, NULL, 6.00, '2022-01-17 16:47:11', NULL);
+Query OK, 1 row affected, 1 warning (0.01 sec)
+
+mysql> INSERT INTO SALES VALUES (5, 1, NULL, 7.50, '2022-01-17 16:58:00', NULL);
+Query OK, 1 row affected, 1 warning (0.01 sec)
+
+mysql> INSERT INTO SALES VALUES (6, 2, NULL, 4.00, '2022-01-17 17:03:33', NULL);
+Query OK, 1 row affected, 1 warning (0.01 sec)
+
+mysql> 
+mysql> INSERT INTO SALE_ITEMS VALUES (1, 20, 2, 8.00);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO SALE_ITEMS VALUES (1, 21, 1, 4.00);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO SALE_ITEMS VALUES (1, 11, 1, 4.50);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> INSERT INTO SALE_ITEMS VALUES (2, 20, 1, 4.00);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO SALE_ITEMS VALUES (3, 20, 1, 4.00);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO SALE_ITEMS VALUES (3, 21, 1, 4.00);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO SALE_ITEMS VALUES (3, 10, 1, 4.50);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO SALE_ITEMS VALUES (3, 15, 1, 5.00);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO SALE_ITEMS VALUES (4, 2, 1, 3.00);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO SALE_ITEMS VALUES (4, 3, 1, 3.00);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO SALE_ITEMS VALUES (5, 3, 1, 3.00);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO SALE_ITEMS VALUES (5, 10, 1, 4.50);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO SALE_ITEMS VALUES (6, 20, 1, 4.00);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> SELECT * FROM SUPPLIER;
++-------------+------------------------+----------------+------------------------------+
+| SUPPLIER_ID | SUPPLIER_NAME          | SUPPLIER_PHONE | SUPPLIER_EMAIL               |
++-------------+------------------------+----------------+------------------------------+
+|           1 | Coco Fresh Tea & Juice | 7183532709     | marketing@cocobubbletea.com  |
+|           3 | Sharetea               | 4052122339     | service@1992sharetea.com     |
+|           4 | Boba Guys              | 4159672622     | support@bobaguys.zendesk.com |
+|           8 | Kung Fu Tea            | 8555389888     | info@kfteausa.com            |
+|          15 | Fat Straws             | 4695472195     | smile@fatstraws.net          |
++-------------+------------------------+----------------+------------------------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT * FROM ITEM;
++---------+---------------------------+------------------+---------------+-----------------+
+| ITEM_ID | ITEM_NAME                 | ITEM_SUPPLIER_ID | ITEM_QUANTITY | ITEM_UNIT_PRICE |
++---------+---------------------------+------------------+---------------+-----------------+
+|       2 | Classic Black Tea         |                3 |            68 |               3 |
+|       3 | Classic Oolong Tea        |                3 |            36 |               3 |
+|      10 | Honey Milk Tea            |                1 |            59 |             4.5 |
+|      11 | Kung Fu Milk Green Tea    |                8 |             5 |             4.5 |
+|      15 | Mango & Passion Fruit Tea |                3 |            15 |               5 |
+|      20 | Matcha Milk Tea           |                4 |             1 |               4 |
+|      21 | Taro Milk Tea             |               15 |             3 |               4 |
++---------+---------------------------+------------------+---------------+-----------------+
+7 rows in set (0.00 sec)
+
+mysql> SELECT * FROM EMPLOYEE;
++-------------+-------------------+---------------+----------------+---------------------------------+---------------------+
+| EMPLOYEE_ID | EMPLOYEE_NAME     | EMPLOYEE_ROLE | EMPLOYEE_PHONE | EMPLOYEE_ADDRESS                | EMPLOYEE_START_DATE |
++-------------+-------------------+---------------+----------------+---------------------------------+---------------------+
+|           1 | Alice Atkins      | Manager       | 479-555-0171   | 4240 Arlington Ave, Jonesboro   | 2021-10-12          |
+|           2 | Albert Bullock    | Cashier       | 479-555-0149   | 383 Rosebud Ave, Hatfield       | 2021-10-12          |
+|           3 | Juan Scott        | Cashier       | 479-555-0152   | 5 Barrington Court, Little Rock | 2021-10-12          |
+|           4 | Christine Jarrett | Cashier       | 479-555-0110   | 1484 Mulberry Avenue, Conway    | 2021-10-12          |
++-------------+-------------------+---------------+----------------+---------------------------------+---------------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT * FROM SALES;
++----------+-------------------+----------------+-------------+-----------------+------------------+
+| SALES_ID | SALES_EMPLOYEE_ID | SALES_GRATUITY | SALES_TOTAL | SALES_CREATE_AT | SALES_UPDATED_AT |
++----------+-------------------+----------------+-------------+-----------------+------------------+
+|        1 |                 4 |           NULL |        16.5 | 2022-01-17      | NULL             |
+|        2 |                 4 |           NULL |           4 | 2022-01-17      | NULL             |
+|        3 |                 3 |           NULL |        17.5 | 2022-01-17      | NULL             |
+|        4 |                 2 |           NULL |           6 | 2022-01-17      | NULL             |
+|        5 |                 1 |           NULL |         7.5 | 2022-01-17      | NULL             |
+|        6 |                 2 |           NULL |           4 | 2022-01-17      | NULL             |
++----------+-------------------+----------------+-------------+-----------------+------------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT * FROM SALE_ITEMS;
++--------------------+--------------------+---------------------+------------------+
+| SALE_ITEMS_SALE_ID | SALE_ITEMS_ITEM_ID | SALE_ITEMS_QUANTITY | SALE_ITEMS_TOTAL |
++--------------------+--------------------+---------------------+------------------+
+|                  1 |                 11 |                   1 |              4.5 |
+|                  1 |                 20 |                   2 |                8 |
+|                  1 |                 21 |                   1 |                4 |
+|                  2 |                 20 |                   1 |                4 |
+|                  3 |                 10 |                   1 |              4.5 |
+|                  3 |                 15 |                   1 |                5 |
+|                  3 |                 20 |                   1 |                4 |
+|                  3 |                 21 |                   1 |                4 |
+|                  4 |                  2 |                   1 |                3 |
+|                  4 |                  3 |                   1 |                3 |
+|                  5 |                  3 |                   1 |                3 |
+|                  5 |                 10 |                   1 |              4.5 |
+|                  6 |                 20 |                   1 |                4 |
++--------------------+--------------------+---------------------+------------------+
+13 rows in set (0.00 sec)
+
+mysql> SHOW TABLES;
++-----------------+
+| Tables_in_ab107 |
++-----------------+
+| EMPLOYEE        |
+| ITEM            |
+| SALES           |
+| SALE_ITEMS      |
+| SUPPLIER        |
++-----------------+
+5 rows in set (0.00 sec)
+
+mysql> DESC SUPPLIER;
++----------------+-------------+------+-----+---------+-------+
+| Field          | Type        | Null | Key | Default | Extra |
++----------------+-------------+------+-----+---------+-------+
+| SUPPLIER_ID    | int(11)     | NO   | PRI | NULL    |       |
+| SUPPLIER_NAME  | char(50)    | NO   |     | NULL    |       |
+| SUPPLIER_PHONE | char(25)    | NO   |     | NULL    |       |
+| SUPPLIER_EMAIL | varchar(50) | NO   |     | NULL    |       |
++----------------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> DESC ITEM;
++------------------+----------+------+-----+---------+-------+
+| Field            | Type     | Null | Key | Default | Extra |
++------------------+----------+------+-----+---------+-------+
+| ITEM_ID          | int(11)  | NO   | PRI | NULL    |       |
+| ITEM_NAME        | char(50) | NO   |     | NULL    |       |
+| ITEM_SUPPLIER_ID | int(11)  | NO   | MUL | NULL    |       |
+| ITEM_QUANTITY    | int(11)  | NO   |     | NULL    |       |
+| ITEM_UNIT_PRICE  | float    | NO   |     | NULL    |       |
++------------------+----------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> DESC EMPLOYEE;
++---------------------+----------+------+-----+---------+-------+
+| Field               | Type     | Null | Key | Default | Extra |
++---------------------+----------+------+-----+---------+-------+
+| EMPLOYEE_ID         | int(11)  | NO   | PRI | NULL    |       |
+| EMPLOYEE_NAME       | char(50) | NO   |     | NULL    |       |
+| EMPLOYEE_ROLE       | char(50) | NO   |     | NULL    |       |
+| EMPLOYEE_PHONE      | char(25) | NO   |     | NULL    |       |
+| EMPLOYEE_ADDRESS    | char(50) | NO   |     | NULL    |       |
+| EMPLOYEE_START_DATE | date     | NO   |     | NULL    |       |
++---------------------+----------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> DESC SALES;
++-------------------+---------+------+-----+---------+-------+
+| Field             | Type    | Null | Key | Default | Extra |
++-------------------+---------+------+-----+---------+-------+
+| SALES_ID          | int(11) | NO   | PRI | NULL    |       |
+| SALES_EMPLOYEE_ID | int(11) | NO   | MUL | NULL    |       |
+| SALES_GRATUITY    | float   | YES  |     | NULL    |       |
+| SALES_TOTAL       | float   | NO   |     | NULL    |       |
+| SALES_CREATE_AT   | date    | NO   |     | NULL    |       |
+| SALES_UPDATED_AT  | date    | YES  |     | NULL    |       |
++-------------------+---------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> DESC SALE_ITEMS;
++---------------------+---------+------+-----+---------+-------+
+| Field               | Type    | Null | Key | Default | Extra |
++---------------------+---------+------+-----+---------+-------+
+| SALE_ITEMS_SALE_ID  | int(11) | NO   | PRI | NULL    |       |
+| SALE_ITEMS_ITEM_ID  | int(11) | NO   | PRI | NULL    |       |
+| SALE_ITEMS_QUANTITY | int(11) | NO   |     | NULL    |       |
+| SALE_ITEMS_TOTAL    | float   | NO   |     | NULL    |       |
++---------------------+---------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> notee
